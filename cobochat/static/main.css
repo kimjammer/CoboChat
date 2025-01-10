@@ -1,0 +1,321 @@
+/** <------------> Globals <------------> **/
+
+@font-face {
+    font-family: AvenirNextRegular;
+    src: url(AvenirNextLTPro-Regular.otf);
+}
+
+@font-face {
+    font-family: AvenirNextBold;
+    src: url(AvenirNextLTPro-Bold.otf);
+}
+
+
+body {
+    margin: 0;
+    font-family: AvenirNextRegular;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+/** <------------> Landing Page <------------> **/
+
+.containerLeft {
+    display: flex;
+    flex-direction: column;
+
+    width: 20%;
+    height: 100vh;
+}
+
+.containerRight {
+    display: flex;
+    flex-direction: column;
+
+    width: 80%;
+    height: 100vh;
+
+    overflow: scroll;
+    scrollbar-width: none;
+}
+
+.leftTitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: AvenirNextBold;
+    font-size: 5vh;
+
+    width: 100%;
+    height: 20%;
+
+    background: #181d1f;
+    color: rgb(206, 210, 214);
+}
+
+.OptionsContainer {
+    display: flex;
+    flex-direction: column;
+
+    overflow: visible;
+
+    width: 100%;
+    height: 80%;
+
+    background-color: #242D2E;
+
+    overflow: scroll;
+    scrollbar-width: none;
+}
+
+.optionTitle {
+    font-family: AvenirNextBold;
+    color: rgb(197, 201, 206);
+
+    padding-left: 20px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    flex-direction: row;
+
+    font-family: AvenirNextBold;
+    color: rgb(206, 210, 214);
+    font-size: 3vh;
+
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    height: 6vh;
+}
+
+.option:hover {
+    background-color: #1E2426;
+    border-left: 4px solid #25B599;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+}
+
+.optionImage {
+    height: 70%;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+#overview {
+    border-left: 4px solid #25B599;
+    color: white;
+}
+
+.rightUpperContainer {
+    display: flex;
+    flex-direction: row;
+
+    width: 100%;
+    height: 10vh;
+}
+
+.rightUpperLeft {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+
+    background-color: #25B599;
+    color: white;
+    font-family: AvenirNextBold;
+    font-size: 4vh;
+
+    width: 85%;
+    height: 100%;
+
+}
+
+.rightUpperRight {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: row;
+
+    width: 15%;
+    height: 100%;
+
+    font-family: AvenirNextBold;
+
+    background: #181d1f;
+    color: rgb(206, 210, 214);
+}
+
+.upperImage {
+    height: 40%;
+    padding: 30px;
+}
+
+.pageContentContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    width: 100%;
+    /* overflow: scroll; */
+}
+
+.rightUpperLeftTitle {
+    padding-left: 1%;
+    margin: 10px;
+}
+
+.upperLink {
+    color: rgb(206, 210, 214);
+}
+
+.upperLink:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.loginContainer {
+    border: 2px solid black;
+    width: 70%;
+
+    font-family: AvenirNextBold;
+
+    margin: 2vh;
+    padding: 1vh;
+}
+
+.errorPadding {
+    margin-top: 1vh;
+}
+
+.article-img {
+    height: 100px;
+    width: 100px;
+}
+
+.account-img {
+    height: 125px;
+    width: 125px;
+    margin-right: 20px;
+    margin-bottom: 16px;
+}
+
+.boldText {
+    font-family: AvenirNextBold;
+}
+
+.ownerLink {
+    background-color: #242D2E;
+}
+
+.paginationContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.ownerLinkText {
+    text-align: center;
+}
+
+.normalFont {
+    font-family: AvenirNextRegular;
+}
+
+/* CLOCK DISPLAY STUFF */
+
+.clock-day:before {
+    content: var(--timer-day);
+}
+.clock-hours:before {
+    content: var(--timer-hours);
+}
+.clock-minutes:before {
+    content: var(--timer-minutes);
+}
+.clock-seconds:before {
+    content: var(--timer-seconds);
+}
+.clock-container {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    background-color: #080808;
+    border-radius: 5px;
+    padding: 60px 20px;
+    display: flex;
+}
+.clock-col {
+    text-align: center;
+    margin-right: 40px;
+    margin-left: 40px;
+    min-width: 90px;
+    position: relative;
+}
+.clock-col:not(:last-child):before, .clock-col:not(:last-child):after {
+    content: "";
+    background-color: rgba(255, 255, 255, .3);
+    height: 5px;
+    width: 5px;
+    border-radius: 50%;
+    display: block;
+    position: absolute;
+    right: -42px;
+}
+.clock-col:not(:last-child):before {
+    top: 35%;
+}
+.clock-col:not(:last-child):after {
+    top: 50%;
+}
+.clock-timer:before {
+    color: #fff;
+    font-size: 4.2rem;
+    text-transform: uppercase;
+}
+.clock-label {
+    color: rgba(255, 255, 255, .35);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    margin-top: 10px;
+}
+@media (max-width: 825px) {
+    .clock-container {
+        flex-direction: column;
+        padding-top: 40px;
+        padding-bottom: 40px;
+   }
+    .clock-col + .clock-col {
+        margin-top: 20px;
+   }
+    .clock-col:before, .clock-col:after {
+        display: none !important;
+   }
+}
+
+/* END CLOCK STUFF */
+
+.moderationContainer {
+    font-family: AvenirNextBold;
+    width: 100%;
+}
+
+.hrLine {
+    /* border: solid 2px black; */
+    width: 60%;
+}
+
+.accountInfoTitle {
+    font-size: 30px;
+}
+
+.saveWhitespace {
+    white-space: pre;
+}

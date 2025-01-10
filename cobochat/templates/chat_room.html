@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <script src="{{ url_for('static', filename='clock.js') }}"></script>
+
+    <div class="clockPageContainer">
+
+        <div class="clock-container">
+
+            <div class="clock-col">
+                <p class="clock-day clock-timer">
+                </p>
+                <p class="clock-label">
+                        Days
+                </p>
+            </div>
+    
+            <div class="clock-col">
+                <p class="clock-hours clock-timer">
+                </p>
+                <p class="clock-label">
+                        Hours
+                </p>
+            </div>
+    
+            <div class="clock-col">
+                <p class="clock-minutes clock-timer">
+                </p>
+                <p class="clock-label">
+                        Minutes
+                </p>
+            </div>
+    
+            <div class="clock-col">
+                <p class="clock-seconds clock-timer">
+                </p>
+                <p class="clock-label">
+                        Seconds
+                </p>
+            </div>
+    
+        </div>
+
+    </div>
+
+{% endblock content %}

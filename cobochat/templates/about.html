@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section loginContainer">
+        <h1>About CoboChat</h1>
+        <hr>
+        <p class="normalFont">
+            CoboChat is a project created by <a href="{{ url_for('user_posts', username='Cobo') }}">Cohen</a> with the intention to host a care-free environment to post thoughts, expressions, opinions, and daily feelings.
+            <br><br>
+            This program is extremely restricted, with accounts only given to those that have a relationship with Cohen. This is simply to maintain the security and anonymity of the users.
+            <br><br>
+            The project was made from scratch by Cohen, with networking help from <a href="{{ url_for('user_posts', username='Foz') }}">Foz</a> and motivation from <a href="{{ url_for('user_posts', username='KimJammer') }}">John</a>.
+            <br><br>
+            <em class="text-muted">Ad fontes, Veritas omnia vincit</em>
+            
+            <hr>
+            <p>© 2024 CoboChat. All Rights Reserved</p>
+        </p>
+    </div>
+{% endblock content %}
