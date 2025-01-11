@@ -319,3 +319,7 @@ body {
 .saveWhitespace {
     white-space: pre;
 }
+
+.fontWrap {
+    overflow-wrap: anywhere;
+}
