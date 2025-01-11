@@ -10,6 +10,21 @@ from flask_login import login_user, current_user, logout_user, login_required
 # I don't know why this works or why its needed but it fixes like 30 mins worth of errors with the database...
 app.app_context().push()
 
+# First startup check (no tables in db)
+try:
+    User.query.first()
+except:
+    db.create_all()
+    print("Database Init!")
+
+# No users check
+if User.query.first() is None:
+    hashed_password = bcrypt.generate_password_hash("admin").decode('utf-8')
+    user = User(username="admin", full_name="delete me", password=hashed_password,
+                account_type="Administrator")
+    db.session.add(user)
+    db.session.commit()
+
 # ======================================
 # ========== Helper Functions ==========
 # ======================================
@@ -156,8 +171,8 @@ def user_posts(username):
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    # if current_user.is_authenticated and (current_user.account_type == "Owner" or current_user.account_type == "Administrator"):
-    if True:
+    if current_user.is_authenticated and (current_user.account_type == "Owner" or current_user.account_type == "Administrator"):
+    # if True:
         form = RegistrationForm()
         if form.validate_on_submit():
             hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
