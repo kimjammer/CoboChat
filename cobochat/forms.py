@@ -9,10 +9,10 @@ class RegistrationForm(FlaskForm):
     username = StringField('Username',
                            validators=[DataRequired(), Length(min=2, max=20)])
     full_name = StringField('Full Name',
-                        validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+                        validators=[DataRequired(), Length(min=2, max=20)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=2, max=100)])
     confirm_password = PasswordField('Confirm Password',
-                                     validators=[DataRequired(), EqualTo('password')])
+                                     validators=[DataRequired(), EqualTo('password'), Length(min=2, max=100)])
     account_type = SelectField('Account Type', validators=[DataRequired()], 
                                choices=['User', 'Administrator', 'Networking Engineer', 'Owner'])
     submit = SubmitField('Sign Up')
@@ -34,7 +34,7 @@ class UpdateAccountForm(FlaskForm):
     username = StringField('Username',
                            validators=[DataRequired(), Length(min=2, max=20)])
     full_name = StringField('Full Name',
-                        validators=[DataRequired()])
+                        validators=[DataRequired(), Length(min=2, max=20)])
     bio = TextAreaField('Bio')
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png', 'webp'])])
     submit = SubmitField('Update')
@@ -46,8 +46,8 @@ class UpdateAccountForm(FlaskForm):
                 raise ValidationError('That username is taken. Please choose a different one.')
             
 class PostForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()])
+    title = StringField('Title', validators=[DataRequired(), Length(min=1, max=100)])
+    content = TextAreaField('Content', validators=[DataRequired(), Length(min=1, max=1000)])
     submit = SubmitField('Post')
 
 class AnnouncementForm(FlaskForm):

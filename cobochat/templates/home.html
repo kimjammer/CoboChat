@@ -10,7 +10,7 @@
             </div>
             <h2><a class="article-title" href="{{ url_for('post', post_id = post.id) }}">{{ post.title }}</a></h2>
             <hr>
-            <p class="article-content normalFont saveWhitespace">{{ post.content }}</p>
+            <p class="article-content normalFont">{{ post.content }}</p>
           </div>
         </article>
     {% endfor %}
