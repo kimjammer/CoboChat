@@ -178,14 +178,17 @@ def announcements():
 @app.route("/announcement/new", methods=['GET', 'POST'])
 @login_required
 def new_announcement():
-    form = AnnouncementForm()
-    if form.validate_on_submit():
-        announcement = Announcement(title=form.title.data, content=form.content.data, author=current_user)
-        db.session.add(announcement)
-        db.session.commit()
-        flash('Announcement has been created!', 'success mt-4')
-        return redirect(url_for('announcements'))
-    return render_template('create_announcement.html', title='New Announcement', form=form, legend='New Announcement')
+    if current_user.account_type == 'Owner' or current_user.account_type == 'Administrator':
+        form = AnnouncementForm()
+        if form.validate_on_submit():
+            announcement = Announcement(title=form.title.data, content=form.content.data, author=current_user)
+            db.session.add(announcement)
+            db.session.commit()
+            flash('Announcement has been created!', 'success mt-4')
+            return redirect(url_for('announcements'))
+        return render_template('create_announcement.html', title='New Announcement', form=form, legend='New Announcement')
+    else:
+        abort(403)
 
 @app.route("/announcement/<int:announcement_id>/delete", methods=['POST'])
 @login_required
@@ -202,7 +205,10 @@ def delete_announcement(announcement_id):
 @app.route("/moderate")
 @login_required
 def moderate():
-    return render_template('moderate.html', title='Moderate')
+    if current_user.account_type == 'Owner' or current_user.account_type == 'Administrator':
+        return render_template('moderate.html', title='Moderate')
+    else:
+        abort(403)
 
 @app.route("/delete_posts")
 @login_required
