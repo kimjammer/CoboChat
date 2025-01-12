@@ -9,6 +9,6 @@ RUN pip install gunicorn
 
 # Copy source code (except static)
 COPY cobochat ./cobochat
-EXPOSE 5000
+EXPOSE 8000
 
-CMD ["gunicorn", "cobochat:app", "-w", "1", "--threads", "4", "--port", "5000"]
+CMD ["gunicorn", "cobochat:app", "-w", "1", "--threads", "4", "-b", "0.0.0.0:8000"]
