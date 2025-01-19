@@ -1,0 +1,8 @@
+services:
+  cobochat:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+        - ./instance:/usr/local/app/instance
+        - ./cobochat/static:/usr/local/app/cobochat/static

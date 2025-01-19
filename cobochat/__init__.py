@@ -6,7 +6,7 @@ from flask_login import LoginManager
 app = Flask(__name__)
 # The secret key was generated using the 'secret' Python package. When pushed to production, generate new key and make env variable
 app.config['SECRET_KEY'] = 'a037ea6e64f833615907ad19475804fb'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{app.root_path}/../instance/site.db"
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app) # Used for hashing our passwords in the forms
 login_manager = LoginManager(app)
