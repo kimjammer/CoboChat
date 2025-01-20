@@ -3,7 +3,7 @@ __pycache__/*
 instance/*
 .venv/
 .idea
-static/post_pictures/*
-static/profile_pics/*
-!static/post_pictures/default.png
-!static/profile_pics/default.jpg
+cobochat/static/post_pictures/*
+cobochat/static/profile_pics/*
+!cobochat/static/post_pictures/default.png
+!cobochat/static/profile_pics/default.jpg

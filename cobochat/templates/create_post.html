@@ -33,12 +33,11 @@
                 </div>
                 <div class="form-group">
                     {{ form.post_image.label() }}
+                    {{ form.post_image(class="form-control-file") }}
                     {% if form.post_image.errors %}
                         {% for error in form.post_image.errors %}
                             <span class="text-danger">{{ error }}</span></br>
                         {% endfor %}
-                    {% else %}
-                        {{ form.post_image(class="form-control-file") }}
                     {% endif %}
                 </div>
             </fieldset>

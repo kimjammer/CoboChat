@@ -34,10 +34,12 @@ class Post(db.Model):
         return f"Post('{self.title}', '{self.date_posted}')"
     
 class Likes(db.Model):
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
+    like_id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class Dislikes(db.Model):
+    dislike_id = db.Column(db.Integer, primary_key=True)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
