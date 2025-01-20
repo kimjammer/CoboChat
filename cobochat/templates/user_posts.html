@@ -33,6 +33,7 @@
               <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
             </div>
             <h2><a class="article-title" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h2>
+            <hr>
             <p class="article-content normalFont">{{ post.content }}</p>
             {% if post.post_image %}
             <img src="{{ url_for('static', filename='post_pictures/' + post.post_image) }}" class="img-fluid">
@@ -50,7 +51,6 @@
               </div>
 
             </div>
-          <hr>
           </div>
         </article>
     {% endfor %}
