@@ -1,11 +1,18 @@
+# Blog Imports
 import os
+import random
 import secrets
 from PIL import Image
-from flask import render_template, url_for, flash, redirect, request, abort
+from flask import render_template, url_for, flash, redirect, request, abort, session, Response
 from cobochat import app, db, bcrypt
-from cobochat.models import User, Post, Announcement
+from cobochat.models import User, Post, Announcement, Likes, Dislikes
 from cobochat.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm, AnnouncementForm
 from flask_login import login_user, current_user, logout_user, login_required
+
+# Chat Room Imports
+from cobochat import socketio, rooms
+from flask_socketio import join_room, leave_room, send
+from string import ascii_uppercase
 
 # I don't know why this works or why its needed but it fixes like 30 mins worth of errors with the database...
 app.app_context().push()
@@ -29,13 +36,18 @@ if User.query.first() is None:
 # ========== Helper Functions ==========
 # ======================================
 
-def save_picture(form_picture):
+def save_picture(form_picture, pic_type):
+    ''' pic_type (str): "profile_pic", "post_pic" '''
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_ext
-    picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
     
-    output_size = (125, 125)
+    if pic_type == "profile_pic":
+        output_size = (125, 125)
+        picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
+    elif pic_type == "post_pic":
+        picture_path = os.path.join(app.root_path, 'static/post_pictures', picture_fn)
+        output_size = (1280, 1024)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
     i.save(picture_path)
@@ -47,19 +59,15 @@ def save_picture(form_picture):
 # ====================================
 
 @app.route("/")
-@app.route("/home")
+@app.route("/home", methods=['POST', 'GET'])
 def home():
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=10)
     return render_template('home.html', title='Home', posts=posts)
 
 @app.route("/about")
 def about():
     return render_template('about.html', title='About')
-
-@app.route("/chat_room")
-def chat_room():
-    return render_template('chat_room.html', title='Chat Room')
 
 @app.route("/display_users")
 @login_required
@@ -94,7 +102,7 @@ def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
-            picture_file = save_picture(form.picture.data)
+            picture_file = save_picture(form.picture.data, "profile_pic")
             current_user.image_file = picture_file
         current_user.username = form.username.data
         current_user.full_name = form.full_name.data
@@ -114,7 +122,11 @@ def account():
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        if form.post_image.data:
+            picture_file = save_picture(form.post_image.data, "post_pic") # Create the image
+            post = Post(title=form.title.data, content=form.content.data, author=current_user, post_image=picture_file, like_counter=0, dislike_counter=0)
+        else:
+            post = Post(title=form.title.data, content=form.content.data, author=current_user, like_counter=0, dislike_counter=0)
         db.session.add(post)
         db.session.commit()
         flash('Post has been created!', 'success mt-4')
@@ -162,8 +174,57 @@ def delete_post(post_id):
 def user_posts(username):
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
-    posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc()).paginate(page=page, per_page=10)
     return render_template('user_posts.html', posts=posts, user=user)
+
+# ======================================
+# ========== Chat Room Routes ==========
+# ======================================
+
+# @app.route("/chat_room")
+# @login_required
+# def chat_room():
+#     session["room"] = "Main" # This is temporary, but can be changed later i guess (if we want to make specific chat rooms)
+#     session["name"] = current_user.username
+#     room = session.get("room")
+#     return render_template('chat_room.html', title='Chat Room', room=session["room"], code=room, messages=rooms[room]["messages"])
+
+@socketio.on("message")
+def message(data):
+    room = session.get("room")
+    if room not in rooms:
+        return
+    
+    content = {
+        "name": session.get("name"),
+        "message": data["data"]
+    }
+    send(content, to=room)
+    rooms[room]["messages"].append(content)
+
+@socketio.on("connect")
+def connect(auth):
+    name = session.get("name")
+    room = session.get("room")
+    if not room or not name:
+        return
+    if room not in rooms:
+        leave_room(room)
+
+    join_room(room)
+    send({"name": name, "message": "has entered the room!"}, to=room)
+    rooms[room]["members"] += 1
+
+@socketio.on("disconnect")
+def disconnect():
+    name = session.get("name")
+    room = session.get("room")
+    leave_room(room)
+
+    if room in rooms:
+        rooms[room]["members"] -= 1
+
+    send({"name": name, "message": "has left the room!"}, to=room)
 
 # ===========================================
 # ========== Admin-Specific Routes ==========
@@ -275,3 +336,45 @@ def delete_user(user_id):
         return render_template('home.html', title='Home', posts=posts)
     else:
         abort(403)
+
+# =========================
+# ========== API ==========
+# =========================
+
+@app.route("/api/like", methods=['POST'])
+@login_required
+def api_like():
+    is_liked = False
+    db_query = Likes.query.filter_by(user_id=request.form['user_id'], post_id=request.form['post_id']).first()
+    post = Post.query.filter_by(id=request.form['post_id']).first()
+
+    if not db_query:
+        like = Likes(user_id=request.form['user_id'], post_id=request.form['post_id'])
+        post.like_counter += 1
+        db.session.add(like)
+        is_liked = True
+    else:
+        db.session.delete(db_query)
+        post.like_counter -= 1
+
+    db.session.commit()
+    return ({"is_liked": is_liked}, 200)
+
+@app.route("/api/dislike", methods=['POST'])
+@login_required
+def api_dislike():
+    is_disliked = False
+    db_query = Dislikes.query.filter_by(user_id=request.form['user_id'], post_id=request.form['post_id']).first()
+    post = Post.query.filter_by(id=request.form['post_id']).first()
+
+    if not db_query:
+        dislike = Dislikes(user_id=request.form['user_id'], post_id=request.form['post_id'])
+        post.dislike_counter += 1
+        db.session.add(dislike)
+        is_disliked = True
+    else:
+        db.session.delete(db_query)
+        post.dislike_counter -= 1
+
+    db.session.commit()
+    return ({"is_disliked": is_disliked}, 200)

@@ -26,10 +26,21 @@ class Post(db.Model):
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text(1000), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) # removed a nullable=False argument to allow for deletion of users but may cause bugs idk
+    post_image = db.Column(db.String(20), nullable=True)
+    like_counter = db.Column(db.Integer, nullable=True)
+    dislike_counter = db.Column(db.Integer, nullable=True)
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
     
+class Likes(db.Model):
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+class Dislikes(db.Model):
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
 class Announcement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
