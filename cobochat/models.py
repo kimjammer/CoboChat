@@ -40,7 +40,7 @@ class Likes(db.Model):
 
 class Dislikes(db.Model):
     dislike_id = db.Column(db.Integer, primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class Announcement(db.Model):
