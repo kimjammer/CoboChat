@@ -2,6 +2,7 @@ cobochat/__pycache__/*
 __pycache__/*
 instance/*
 .venv/
+venv/
 .idea
 cobochat/static/post_pictures/*
 cobochat/static/profile_pics/*

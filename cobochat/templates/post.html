@@ -1,4 +1,19 @@
 {% extends "layout.html" %}
+{% block head_includes %}
+    <meta content="CoboChat" name="application-name" />
+    <meta content="CoboChat" name="og:site_name" />
+    <meta content="article" property="og:type" />
+    <meta content="{{ post.date_posted.isoformat() + 'Z' }}" name="article:published_time" />
+    <meta content="{{ post.title }}" property="og:title" />
+    <meta content="{{ post.content }}" property="og:description" />
+    <meta content="{{ 'https://cobochat.com' + url_for('post', post_id = post.id) }}" property="og:url" />
+    <meta content="#25B599" data-react-helmet="true" name="theme-color" />
+    <link rel="alternate" type="application/json+oembed" href="https://cobochat.com/oembed?url={{ url_for('post', post_id = post.id) }}" />
+    {% if post.post_image %}
+    <meta content="{{ 'https://cobochat.com' + url_for('static', filename='post_pictures/' + post.post_image) }}" property="og:image" />
+    <meta name="twitter:card" content="summary_large_image">
+    {% endif %}
+{% endblock %}
 {% block content %}
     <article class="media content-section loginContainer">
         <img class="rounded-circle article-img smallImg" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">

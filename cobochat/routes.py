@@ -378,3 +378,24 @@ def api_dislike():
 
     db.session.commit()
     return ({"is_disliked": is_disliked}, 200)
+
+@app.route("/oembed", methods=['GET'])
+def oembed():
+    url = ""
+    try:
+        url = request.args["url"]
+    except:
+        return ({}, 400)
+
+    post = Post.query.get_or_404(url.split("/")[-1])
+
+    response = {
+        "author_name": post.author.username,
+        "author_url": "https://cobochat.com" + url_for('user_posts', username=post.author.username),
+        "provider_name": "CoboChat",
+        "provider_url": "https://cobochat.com",
+        "title": "Embed",
+        "type": "link",
+        "version":"1.0"
+    }
+    return (response, 200)
